@@ -17,7 +17,7 @@ namespace BusinessLogic
             string filePath = Path.Combine(new DirectoryInfo(Directory.GetCurrentDirectory()).FullName, "restaurants.json");
             return filePath;
         }
-        
+            
         public void SerializeRestaurants(List<T> restaurants, string filePath)
         {
             JsonSerializerSettings settings = new JsonSerializerSettings
