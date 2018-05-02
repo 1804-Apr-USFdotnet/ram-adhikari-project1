@@ -63,13 +63,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BusinessLogic\BusinessLogic.csproj">
+      <Project>{cb206222-e469-4a0f-a368-f6509517f91f}</Project>
+      <Name>BusinessLogic</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Data\Data.csproj">
       <Project>{015743c2-6c14-440c-86e1-2938877260be}</Project>
       <Name>Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ProjectZeorLibrary\BusinessLogic.csproj">
-      <Project>{CB206222-E469-4A0F-A368-F6509517F91F}</Project>
-      <Name>BusinessLogic</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
