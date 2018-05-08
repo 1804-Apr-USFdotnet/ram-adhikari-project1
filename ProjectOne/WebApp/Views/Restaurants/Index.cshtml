@@ -1,0 +1,92 @@
+﻿@model IEnumerable<WebApp.Models.Restaurant>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+
+    @using (Html.BeginForm())
+    {
+    <p>
+        Name: @Html.TextBox("SearchName") <br />
+        <input type="submit" value="Search" />
+    </p>
+}
+
+    </p>
+    <table class="table">
+        <tr>
+
+            <th>
+                @Html.ActionLink("Name", "Index", new { sortBy = ViewBag.NameSort })
+            </th>
+            <th>
+                @Html.ActionLink("Delivery", "Index", new { sortBy = ViewBag.DeliverySort })
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Phone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Website)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FoodType)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DeliveryOption)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Phone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Website)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FoodType)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.RestaurantId }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.RestaurantId }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.RestaurantId })
+                </td>
+            </tr>
+        }
+    </table>
+
+    <div class="container btn-group-lg btn-success">
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" href="#collapse1">Top Three</a>
+                    </h4>
+                </div>
+                <div id="collapse1" class="panel-collapse collapse">
+                    <div class="panel-body btn-success"><p>@(ViewBag.First + "__________________________" + @ViewBag.FirstRating)</p></div>
+                    <div class="panel-body btn-primary"><p>@(ViewBag.Second + "_____________________" + @ViewBag.SecondRating)</p></div>
+                    <div class="panel-body btn-warning"><p>@(ViewBag.Third + "___________________________" + @ViewBag.ThirdRating)</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+ 

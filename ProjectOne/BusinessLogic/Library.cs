@@ -16,6 +16,7 @@ namespace BusinessLogic
      * Display all the reviews of a restaurant
      * Search restaurants (e.g. by partial name), and display all matching results
      * Quit application*/
+
     public class Library
     {
         private DataLayer dataCrud = new DataLayer();
@@ -32,145 +33,57 @@ namespace BusinessLogic
             dataCrud.DeleteRestaurant(restaurantId);            
         }
 
-
         //Modify a restaurant
         public void Modify(List<string> list)
         {
             dataCrud.ModifyRestaurant(list);
         }
 
-        
-        //Display one instance of a restaurant
-        public void DisplayRestaurantById(int restaurantId)
+        public IEnumerable<Restaurant> GetAllRestaurants()
         {
-            Restaurant restaurant = dataCrud.FindRestaurantById(restaurantId);
-            PrintRestaurant(restaurant);
+            return dataCrud.GetRestaurantsList();
         }
 
-        //crud.PrintRestaurantsId();
-        public void PrintIds()
+        private IEnumerable<Restaurant> SortByDelivery()
         {
-            PrintRestaurantsId();
-        }
-        private void PrintRestaurantsId()
-        {
-            List<Restaurant> restaurants = dataCrud.GetRestaurantsList();
-            Console.Write("Valid id's of restaurants: ");
-            foreach (var res in restaurants)
-            {
-                Console.Write(" " + res.RestaurantId + "  ");
-            }
-            Console.WriteLine();
+            IEnumerable<Restaurant> restaurants = dataCrud.GetRestaurantsList();
+            List<Restaurant> sortedRestaurants = restaurants.OrderBy(r => r.DeliveryOption).ToList();
+            return sortedRestaurants;
         }
 
-        public int MinId()
+        private IEnumerable<Restaurant> SortByName()
         {
-            List<Restaurant> restaurants = dataCrud.GetRestaurantsList();
-            int count = restaurants.Count;
-            if (count >= 1)
-            {
-                return restaurants.ElementAt(0).RestaurantId;
-            }
-            else
-            {
-                return 0;
-            }
-            
-        }
-
-        public int MaxId()
-        {
-            List<Restaurant> restaurants = dataCrud.GetRestaurantsList();
-            int count = restaurants.Count;
-            if(count >= 1)
-            {
-                return restaurants.ElementAt(count - 1).RestaurantId;
-            }
-            else
-            {
-                return 0;
-            }
-            
-        }
-
-
-        // crud.SortAndDisplayById();
-        public void DisplaySortedId()
-        {
-            SortAndDisplayById();
-        }
-        private void SortAndDisplayById()
-        {
-            List<Restaurant> restaurants = dataCrud.GetRestaurantsList();
-            List<Restaurant> sortedRestaurants = restaurants.OrderBy(r => r.RestaurantId).ToList();
-            foreach (var res in sortedRestaurants)
-            {
-                PrintRestaurant(res);
-            }
-        }
-
-
-        //Sort by name and dispaly it 
-        public void DisplaySortedName()
-        {
-            SortAndDisplayByName();
-        }
-        private void SortAndDisplayByName()
-        {
-            List<Restaurant> restaurants = dataCrud.GetRestaurantsList();
+            IEnumerable<Restaurant> restaurants = dataCrud.GetRestaurantsList();
             List<Restaurant> sortedRestaurants = restaurants.OrderBy(r => r.Name).ToList();
-            foreach (var res in sortedRestaurants)
-            {
-                PrintRestaurant(res);
-            }
+            return sortedRestaurants;
         }
 
 
-        //crud.DisplyAllReviewsOfRestaurant(i);
-        public void DisplayReviewsOfRestaurant(int restaurantId)
+        //Return top three as a list
+        public IEnumerable<String> TopThree()
         {
-            List<Review> reviews = dataCrud.GetReviewsList();
-            foreach (var rev in reviews)
-            {
-                if (rev.RestaurantId == restaurantId)
-                {
-                    PrintReview(rev);
-                }
-            }
-        }
-        private void PrintReview(Review rev)
-        {
-            Console.WriteLine("\nReview Id:     " + rev.ReviewId +
-                              "\nRestaurant Id: " + rev.RestaurantId);
-            Console.WriteLine("Rating:        {0:N2}", rev.Rating / 2.0);
-            Console.WriteLine("Username:      " + rev.Username +
-                              "\nComment:       " + rev.Comment +
-                              "\nDate:          " + rev.ReviewDate);
-        }
-
-
-        //Display top 3 restaurants by average rating
-        public void TopThree()
-        {
+            List<String> top = new List<string>();
             List<KeyValuePair<Restaurant,double>> avgRatingsList = TopThreeRated(false);
             int r = 0;
             foreach (var rating in avgRatingsList)
             {
-                Console.Write("Restaurant Name: " + rating.Key.Name);
-                Console.WriteLine("\nAverage Rating: {0:N2}\n", rating.Value / 2.0);
+                top.Add(rating.Key.Name);
+                top.Add((rating.Value / 2.0).ToString("0.##"));
                 r++;
                 if (r == 3)
                 {
                     break;
                 }
             }
+            return top;
         }
+
 
         //Uses optional parameters 
         public List<KeyValuePair<Restaurant, double>> TopThreeRated(bool testing, List<Restaurant> resta = null,
             List<Review> rev = null)
         {
-            List<Restaurant> restaurants = resta;
+            IEnumerable<Restaurant> restaurants = resta;
             List<Review> reviews = rev;
             //For unit testing purposes only 
             if (testing == false)
@@ -210,6 +123,7 @@ namespace BusinessLogic
             return avgRatingsList;
         }
         
+
         private int TotalReviewsByResId(bool testing, int restaurantId, List<Review> revs)
         {
             List<Review> reviews = revs;
@@ -228,59 +142,52 @@ namespace BusinessLogic
             return count;
         }
 
-        //Partial search by name
-        public void PartialSearch(string partialName)
-        {
-            List<Restaurant> restaurants = SearchedByPartialName(false, partialName);
-            
-            foreach (var res in restaurants)
-            {
-                PrintRestaurant(res);
 
-            }
-        }
-        public List<Restaurant> SearchedByPartialName(bool testing, string partialName, List<Restaurant> resta = null)
+        public IEnumerable<Restaurant> PartialNameSearch(bool testing, string partialName, List<Restaurant> testResta = null)
         {
-            List<Restaurant> restaurants = resta;
-            List<Restaurant> returnList = new List<Restaurant>();
-            if (testing == false)
-            {
-                restaurants = dataCrud.GetRestaurantsList();
-            }
-            foreach (var res in restaurants)
-            {
-                string resName = res.Name.ToLower();
-                string partial = partialName.ToLower();
-                if (partialName.Length > 0)
-                {
-                    if (resName.Contains(partial))
-                    {
-                        returnList.Add(res);
-                    }
-                }
-            }
-            return returnList;
-        }
-        private void PrintRestaurant(Restaurant res)
-        {
-            if(res != null)
-            {
-                Console.WriteLine("ID:          " + res.RestaurantId +
-                  "\nName:      " + res.Name +
-                  "\nAddress:   " + res.Address +
-                  "\nPhone:     " + res.Phone +
-                  "\nWebsite:   " + res.Website +
-                  "\nDelivery:  " + res.DeliveryOption +
-                  "\nFoodType:  " + res.FoodType + "\n");
-            }
-            else
-            {
-                Console.WriteLine("Restaurant not in the database.");
-            }
+            IEnumerable<Restaurant> rests = testResta;
 
+            if(testing == false)
+            {
+                rests = dataCrud.GetRestaurantsList();
+            }            
+
+            if (!String.IsNullOrEmpty(partialName))
+            {
+                rests = rests.Where(r => r.Name.ToLower().Contains(partialName.ToLower()));
+            }           
+            return rests;
         }
 
 
+        public Restaurant GetRestaurantById(int? id)
+        {
+            return dataCrud.GetRestaurantsList().Where(x => x.RestaurantId == id).FirstOrDefault();
+        }
 
+        public IEnumerable<Review> GetAllReviews()
+        {
+            return dataCrud.GetReviewsList();
+        }
+
+        public Review GetReviewById(int? id)
+        {
+            return GetAllReviews().Where(x => x.ReviewId == id).FirstOrDefault();
+        }
+        
+        public void AddReview(List<string> list)
+        {
+            dataCrud.AddReview(list);
+        }
+
+        public void ModifyReview(List<string> list)
+        {
+            dataCrud.ModifyReview(list);
+        }
+
+        public void DeleteReview(int reviewId)
+        {
+            dataCrud.DeleteReview(reviewId);
+        }
     }
 }

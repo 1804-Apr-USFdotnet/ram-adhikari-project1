@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using BusinessLogic;
+using WebApp.Controllers;
+using System.Web.Mvc;
+using System.Net;
 
 namespace TestDriven
 {
@@ -93,9 +96,63 @@ namespace TestDriven
             Assert.AreEqual(expected2, actual2);
             Assert.AreEqual(expected3, actaul3);            
         }
+    
 
         [TestMethod]
-        public void TestPartialSearch()
+        public void RestaurantDetails()
+        {
+            // Arrange
+            RestaurantsController controller = new RestaurantsController();
+
+            // Act
+            ActionResult result = controller.Delete(null) as HttpNotFoundResult;
+
+            // Assert
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void ReviewDetails()
+        {
+            // Arrange
+            ReviewsController controller = new ReviewsController();
+
+            // Act
+            ActionResult result = controller.Delete(null) as HttpNotFoundResult;
+
+            // Assert
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void DeleteRestaurant()
+        {
+            // Arrange
+            RestaurantsController controller = new RestaurantsController();
+
+            // Act
+            ActionResult result = controller.Delete(null) as HttpNotFoundResult;
+
+            // Assert
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void DeleteReview()
+        {
+            // Arrange
+            ReviewsController controller = new ReviewsController();
+
+            // Act
+            ActionResult result = controller.Delete(null) as HttpNotFoundResult;
+
+            // Assert
+            Assert.IsNull(result);
+        }
+
+        
+        [TestMethod]
+        public void TestPartial()
         {
             List<Restaurant> restaurantList = new List<Restaurant>();
             restaurantList.Add(res1);
@@ -104,15 +161,76 @@ namespace TestDriven
             restaurantList.Add(res4);
 
             Library libraryLogic = new Library();
-            List<Restaurant> list = libraryLogic.SearchedByPartialName(true, "Col", restaurantList);
 
-            string expected1 = "Columbia";
-            string actual1 = list[0].Name;
-            Assert.AreEqual(expected1, actual1);
+            IEnumerable<Restaurant> restaurants = (libraryLogic.PartialNameSearch(true, "Col", restaurantList));
 
-            list = libraryLogic.SearchedByPartialName(true, "hut", restaurantList);
-            string actual2 = list[0].Name;
-            Assert.AreEqual("Loving Hut", actual2);
+            Assert.IsNotNull(restaurants);
         }
+
+        [TestMethod]
+        public void ReviewIndex()
+        {
+            // Arrange
+            ReviewsController controller = new ReviewsController();
+
+            // Act
+            ViewResult result = controller.Index() as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+        }
+
+        [TestMethod]
+        public void ReviewWeb()
+        {
+            // Assert
+            Assert.IsNotNull(ReviewsController.RevToWeb(new Review()
+            {
+                ReviewId = 90,
+                RestaurantId = 10,
+                Rating = 5,
+                Username = "Who",
+                Comment = "test"
+            }));
+        }
+
+        [TestMethod]
+        public void RestaurantWeb()
+        {
+            // Assert
+            Assert.IsNotNull(RestaurantsController.ToWeb(new Restaurant()
+            {
+                RestaurantId = 50,
+                Name = "What",
+                Address = "Where",
+                Phone = "1234567890",
+                Website = "testing.com",
+                DeliveryOption = "No",
+                FoodType = "All"
+            }));
+            
+        }
+
+        [TestMethod]
+        public void CheckBoth()
+        {
+            // Assert
+            ReviewsController controller1  = new ReviewsController();
+            RestaurantsController controller2 = new RestaurantsController();
+
+            Assert.IsNull(controller1);
+            Assert.IsNull(controller2);
+            Assert.AreNotEqual(controller1, controller2);
+        }
+
+        [TestMethod]
+        public void CheckOne()
+        {
+            // Assert
+            RestaurantsController controller2 = new RestaurantsController();
+
+            Assert.IsNull(controller2);
+        }
+
     }
 }

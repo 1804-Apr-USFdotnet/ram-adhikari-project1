@@ -31,7 +31,7 @@ namespace Data
         }
 
         //Read
-        public List<Restaurant> GetRestaurantsList()
+        public IEnumerable<Restaurant> GetRestaurantsList()
         {
             List<Restaurant> restaurants = db.Restaurants.ToList();
             return restaurants;
@@ -78,7 +78,7 @@ namespace Data
         //Helper method
         public Restaurant FindRestaurantById(int restaurantId)
         {
-            List<Restaurant> restaurants = GetRestaurantsList();
+            List<Restaurant> restaurants = GetRestaurantsList().ToList();
             foreach (var res in restaurants)
             {
                 if (res.RestaurantId == restaurantId)
@@ -208,6 +208,7 @@ namespace Data
             }
             return null;
         }
-
     }
 }
+
+
