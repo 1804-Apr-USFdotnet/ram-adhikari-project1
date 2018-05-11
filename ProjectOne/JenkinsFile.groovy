@@ -23,6 +23,7 @@ node('master') {
     stage('test') {
         try {
             dir('ram-adhikari-project1/ProjectOne') {
+                bat "VSTest.Console TestDriven\\bin\\Debug\\TestDriven.dll"
             }
         }
         catch (exc) {
