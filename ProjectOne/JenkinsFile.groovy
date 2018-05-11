@@ -43,7 +43,7 @@ node('master') {
     stage('package') {
         try {
             dir('ram-adhikari-project1/ProjectOne') {
-                bat 'msbuild RestaurantReviews.PL /t:package /p:Configuration=Debug;PackageFileName=..\\Package.zip'
+                bat 'msbuild ProjectOne.PL /t:package /p:Configuration=Debug;PackageFileName=..\\Package.zip'
             }
         }
         catch (exc) {
