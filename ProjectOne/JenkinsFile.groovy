@@ -33,9 +33,9 @@ node('master') {
     stage('analyze') {
         try {
             dir('ram-adhikari-project1/ProjectOne') {
-                bat 'SonarQube.Scanner.MSBuild begin /k:restaurant_project1_ram /v:0.1.0'
+                bat 'SonarScanner.MSBuild begin /k:restaurant_project1_ram /v:0.1.0 /d:sonar.verbose=true'
                 bat 'msbuild /t:rebuild'
-                bat 'SonarQube.Scanner.MSBuild end'
+                bat 'SonarScanner.MSBuild end'
             }
         }
         catch (exc) {
